@@ -1,5 +1,5 @@
 # IntelliJ / IDE files
-.idea/
+archive/.idea/
 *.iml
 
 # Node.js
