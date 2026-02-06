@@ -50,7 +50,7 @@ archive/    → 📦 Old or unrelated files
 ✔ Contact form for users  
 ✔ Store messages in database  
 ✔ Automatic email to site owner when a message is received  
-✔ Confirmation email sent to user  
+✔ Confirmation email sent to user {this could be confirmation to user ofcourse and database admin too} Still undecided  
 ✔ Basic input validation
 
 ---
