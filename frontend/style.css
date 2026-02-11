@@ -2,16 +2,12 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
     height: 100vh;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-.container {
-    height: 100%;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,54 +15,64 @@ body {
 
 .card {
     background: white;
-    padding: 30px;
+    padding: 40px;
     width: 100%;
-    max-width: 400px;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    max-width: 420px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
 
 .company {
     text-align: center;
-    color: #667eea;
+    font-size: 32px;
+    color: #2a5298;
     margin-bottom: 5px;
 }
 
 h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     color: #333;
 }
 
 input, textarea {
     width: 100%;
-    margin-bottom: 12px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+input:focus, textarea:focus {
+    border-color: #2a5298;
+    outline: none;
 }
 
 textarea {
     resize: none;
-    height: 100px;
+    height: 120px;
 }
 
 button {
     width: 100%;
-    padding: 10px;
-    background-color: #667eea;
+    padding: 12px;
+    background-color: #2a5298;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-size: 15px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 button:hover {
-    background-color: #5a67d8;
+    background-color: #1e3c72;
 }
 
 #responseMessage {
+    margin-top: 15px;
     text-align: center;
-    margin-top: 10px;
-    color: green;
+    font-weight: bold;
 }
