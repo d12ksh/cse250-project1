@@ -1,78 +1,223 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
 }
 
-body {
-    height: 100vh;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+body{
+    background:#0f172a;
+    color:white;
+    overflow-x:hidden;
 }
 
-.card {
-    background: white;
-    padding: 40px;
-    width: 100%;
-    max-width: 420px;
-    border-radius: 12px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+
+/* HERO */
+
+.hero{
+    padding:120px 20px 60px 20px;
+    max-width:1200px;
+    margin:auto;
 }
 
-.company {
-    text-align: center;
-    font-size: 32px;
-    color: #2a5298;
-    margin-bottom: 5px;
+.hero-container{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:40px;
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #333;
+.hero-text h1{
+    font-size:48px;
+    margin-bottom:20px;
 }
 
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: 0.3s;
+.hero-text p{
+    font-size:18px;
+    color:#cbd5f5;
+    max-width:400px;
 }
 
-input:focus, textarea:focus {
-    border-color: #2a5298;
-    outline: none;
+.hero-image img{
+    width:350px;
 }
 
-textarea {
-    resize: none;
-    height: 120px;
+
+/* FLOATING BACKGROUND SHAPES */
+
+.bg-shape{
+    position:fixed;
+    width:450px;
+    height:450px;
+    background:linear-gradient(45deg,#6366f1,#8b5cf6);
+    filter:blur(140px);
+    opacity:.6;
+    z-index:-1;
 }
 
-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #2a5298;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.3s;
+.shape1{
+    top:-150px;
+    left:-150px;
 }
 
-button:hover {
-    background-color: #1e3c72;
+.shape2{
+    bottom:-150px;
+    right:-150px;
 }
 
-#responseMessage {
-    margin-top: 15px;
-    text-align: center;
-    font-weight: bold;
+.shape3{
+    top:40%;
+    left:50%;
+}
+
+
+/* CONTACT SECTION */
+
+.contact-section{
+    padding:60px 20px;
+    display:flex;
+    justify-content:center;
+}
+
+
+/* GLASS CARD */
+
+.contact-card{
+    width:1000px;
+
+    display:grid;
+    grid-template-columns:1fr 1.2fr;
+
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+
+    border-radius:20px;
+
+    box-shadow:
+            0 20px 60px rgba(0,0,0,.5);
+
+    overflow:hidden;
+
+    animation:fadeUp .7s ease;
+}
+
+
+/* LEFT PANEL */
+
+.contact-info{
+    padding:40px;
+    background:rgba(255,255,255,0.05);
+}
+
+.contact-info h2{
+    margin-bottom:20px;
+}
+
+.info-item{
+    margin-bottom:15px;
+    color:#cbd5f5;
+}
+
+
+/* FORM */
+
+.contact-form{
+    padding:40px;
+}
+
+.row{
+    display:flex;
+    gap:10px;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+    padding:14px;
+    margin-bottom:15px;
+
+    border-radius:8px;
+    border:none;
+
+    background:rgba(255,255,255,0.08);
+    color:white;
+
+    transition:.25s;
+}
+
+textarea{
+    height:120px;
+    resize:none;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    outline:none;
+
+    background:rgba(255,255,255,0.15);
+
+    box-shadow:0 0 0 2px #6366f1;
+}
+
+
+/* BUTTON */
+
+.submit-btn{
+    padding:14px 22px;
+
+    border:none;
+
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+
+    border-radius:8px;
+
+    font-weight:600;
+
+    color:white;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.submit-btn:hover{
+    transform:translateY(-2px);
+
+    box-shadow:0 12px 25px rgba(99,102,241,.5);
+}
+
+
+/* MAP */
+
+.map-section{
+    padding:60px 20px;
+    text-align:center;
+}
+
+.map-section h2{
+    margin-bottom:20px;
+}
+
+.map-section iframe{
+    max-width:1000px;
+    border-radius:12px;
+}
+
+
+/* ANIMATION */
+
+@keyframes fadeUp{
+
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
 }

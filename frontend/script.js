@@ -1,21 +1,11 @@
-const form = document.getElementById("contactForm");
-const responseMessage = document.getElementById("responseMessage");
+const form = document.getElementById("contact-form");
 
-form.addEventListener("submit", function (e) {
+form.addEventListener("submit",function(e){
+
     e.preventDefault();
 
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const message = document.getElementById("message").value;
+    alert("Message sent!");
 
-    const data = {
-        name,
-        email,
-        message
-    };
+    form.reset();
 
-    // TEMP: log instead of sending (backend may not be ready)
-    console.log("Form data:", data);
-
-    responseMessage.textContent = "Message sent (frontend test).";
 });

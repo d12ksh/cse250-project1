@@ -1,22 +1,148 @@
-<head> <link rel="stylesheet" href="style.css">
-    <title>XYZ Company - Contact Us</title>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contact Us</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 </head>
+
 <body>
 
-<div class="card">
-    <h1 class="company">XYZ</h1>
-    <h2>Contact Us</h2>
 
-    <form id="contactForm">
-        <input type="text" id="name" placeholder="Your Name" required />
-        <input type="email" id="email" placeholder="Your Email" required />
-        <textarea id="message" placeholder="Your Message" required></textarea>
-        <button type="submit">Send Message</button>
-    </form>
+<!-- BACKGROUND SHAPES -->
 
-    <p id="responseMessage"></p>
-</div>
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+<div class="bg-shape shape3"></div>
 
-<script type="module" src="/script.js"></script>
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+
+    <div class="hero-container">
+
+        <div class="hero-text">
+
+            <h1>Have Questions?</h1>
+
+            <p>
+                Our team is here to help. Send us a message and we’ll respond as soon as possible.
+            </p>
+
+        </div>
+
+        <div class="hero-image">
+
+            <img src="https://undraw.co/api/illustrations/email-capture.svg">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- CONTACT CARD -->
+
+<section class="contact-section">
+
+    <div class="contact-card">
+
+
+        <!-- LEFT INFO PANEL -->
+
+        <div class="contact-info">
+
+            <h2>Contact Information</h2>
+
+            <p>Reach out to our team anytime.</p>
+
+            <div class="info-item">
+                Email: support@xyz.com
+            </div>
+
+            <div class="info-item">
+                Phone: +91 98765 43210
+            </div>
+
+            <div class="info-item">
+                Location: Ahmedabad, GJ
+            </div>
+
+        </div>
+
+
+
+        <!-- CONTACT FORM -->
+
+        <div class="contact-form">
+
+            <form id="contact-form">
+
+                <div class="row">
+
+                    <input type="text" placeholder="First Name" required>
+
+                    <input type="text" placeholder="Last Name" required>
+
+                </div>
+
+                <input type="email" placeholder="Email Address" required>
+
+                <input type="tel" placeholder="Phone Number">
+
+                <select required>
+
+                    <option value="">Select Department</option>
+
+                    <option>Customer Support</option>
+                    <option>Sales</option>
+                    <option>Technical Support</option>
+                    <option>General Inquiry</option>
+
+                </select>
+
+                <input type="text" placeholder="Subject">
+
+                <textarea placeholder="Write your message..." required></textarea>
+
+                <button class="submit-btn">Send Message</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- MAP -->
+
+<section class="map-section">
+
+    <h2>Our Location</h2>
+
+
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3322.6144966272427!2d72.5518057747707!3d23.03814131574807!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e848d5f86040f%3A0x7a0cc8b624851642!2sAhmedabad%20University!5e1!3m2!1sen!2sin!4v1772715627675!5m2!1sen!2sin" width="600" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+
+</section>
+
+
+<script src="script.js"></script>
+
 </body>
+
+</html>
