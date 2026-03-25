@@ -60,7 +60,7 @@ document.getElementById("contact-form").addEventListener("submit", async functio
 
     try {
 
-        const response = await fetch("https://your-backend-url.onrender.com/contact{", {
+        const response = await fetch("https://xyz-contactus.onrender.com/contact",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
