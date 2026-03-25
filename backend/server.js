@@ -1,17 +1,18 @@
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
+// test route
 app.get("/", (req, res) => {
     res.send("Backend server running");
 });
 
+// contact route
 app.post("/contact", (req, res) => {
 
     const data = req.body;
@@ -26,5 +27,5 @@ app.post("/contact", (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });

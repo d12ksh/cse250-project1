@@ -41,3 +41,42 @@ function animate(){
 }
 
 animate();
+
+// FORM SUBMIT HANDLER
+
+document.getElementById("contact-form").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const formData = {
+        firstName: document.querySelector("input[placeholder='First Name']").value,
+        lastName: document.querySelector("input[placeholder='Last Name']").value,
+        email: document.querySelector("input[placeholder='Email Address']").value,
+        phone: document.querySelector("input[placeholder='Phone Number']").value,
+        department: document.querySelector("select").value,
+        subject: document.querySelector("input[placeholder='Subject']").value,
+        message: document.querySelector("textarea").value
+    };
+
+    try {
+
+        const response = await fetch("https://your-backend-url.onrender.com/contact{", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        alert(result.message);
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Error sending message");
+
+    }
+
+});
