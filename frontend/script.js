@@ -42,12 +42,13 @@ function animate(){
 
 animate();
 
-// FORM SUBMIT HANDLER
+// ========== FORM SUBMISSION ==========
 
 document.getElementById("contact-form").addEventListener("submit", async function(e){
 
     e.preventDefault();
 
+    // Get form values
     const formData = {
         firstName: document.querySelector("input[placeholder='First Name']").value,
         lastName: document.querySelector("input[placeholder='Last Name']").value,
@@ -58,9 +59,31 @@ document.getElementById("contact-form").addEventListener("submit", async functio
         message: document.querySelector("textarea").value
     };
 
-    try {
+    // Validation
+    if (!formData.firstName.trim()) {
+        alert("First Name is required");
+        return;
+    }
+    if (!formData.lastName.trim()) {
+        alert("Last Name is required");
+        return;
+    }
+    if (!formData.email.includes("@")) {
+        alert("Valid Email is required");
+        return;
+    }
+    if (!formData.subject.trim()) {
+        alert("Subject is required");
+        return;
+    }
+    if (!formData.message.trim()) {
+        alert("Message is required");
+        return;
+    }
 
-        const response = await fetch("https://xyz-contactus.onrender.com/contact",{
+    try {
+        // CHANGE THIS URL TO YOUR DEPLOYED BACKEND
+        const response = await fetch("https://xyz-contactus.onrender.com/contact", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -70,14 +93,18 @@ document.getElementById("contact-form").addEventListener("submit", async functio
 
         const result = await response.json();
 
-        alert(result.message);
+        if (response.ok) {
+            alert("✓ Message sent successfully! We'll get back to you soon.");
+
+            // Reset form
+            document.getElementById("contact-form").reset();
+        } else {
+            alert("❌ Error: " + result.message);
+        }
 
     } catch (error) {
-
-        console.error(error);
-        alert("Error sending message");
-
+        console.error("Error:", error);
+        alert("❌ Error sending message. Please try again.");
     }
-
 
 });
