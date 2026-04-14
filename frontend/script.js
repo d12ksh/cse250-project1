@@ -83,7 +83,7 @@ document.getElementById("contact-form").addEventListener("submit", async functio
 
     try {
         // CHANGE THIS URL TO YOUR DEPLOYED BACKEND
-        const response = await fetch("https://contactus.up.railway.app/", {
+        const response = await fetch("https://contactus.up.railway.app/contact", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
