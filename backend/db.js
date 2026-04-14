@@ -7,7 +7,9 @@ const pool = mariadb.createPool({
     database: process.env.MYSQLDATABASE,
     port: process.env.MYSQLPORT,
     connectionLimit: 25,
-    acquireTimeout: 20000
+    acquireTimeout: 20000,
+    waitForConnections: true,
+    queueLimit: 0
 });
 
 module.exports = pool;
