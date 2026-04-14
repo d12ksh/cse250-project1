@@ -2,31 +2,49 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const pool = require("./db");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
 
-// ✅ Email Transporter
+// ✅ Resend setup
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// ✅ Nodemailer transporter using Resend (NO SMTP)
 const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+    name: "resend",
+    send: async (mail, callback) => {
+        try {
+            const { to, subject, text } = mail.data;
+
+            const response = await resend.emails.send({
+                from: "onboarding@resend.dev", // REQUIRED
+                to,
+                subject,
+                text,
+            });
+
+            callback(null, response);
+        } catch (error) {
+            console.error("Email error:", error);
+            callback(error);
+        }
     },
 });
 
-// Test route
+// ✅ TEST ROUTE
 app.get("/", (req, res) => {
     res.send("Backend server running");
 });
 
-// ✅ CONTACT ROUTE - FULL INTEGRATION
+// ✅ CONTACT ROUTE
 app.post("/contact", async (req, res) => {
     let conn;
+
     try {
         const {
             firstName,
@@ -92,9 +110,8 @@ app.post("/contact", async (req, res) => {
         );
         console.log("✓ Message inserted:", messageResult.insertId);
 
-        // 4️⃣ SEND EMAIL TO ADMIN
+        // 4️⃣ EMAIL TO ADMIN
         const adminMail = {
-            from: process.env.EMAIL_USER,
             to: process.env.EMAIL_USER,
             subject: `New Contact: ${subject}`,
             text: `
@@ -108,9 +125,8 @@ ${message}
             `,
         };
 
-        // 5️⃣ SEND EMAIL TO USER
+        // 5️⃣ EMAIL TO USER
         const userMail = {
-            from: process.env.EMAIL_USER,
             to: email,
             subject: "We received your message",
             text: `
@@ -125,13 +141,15 @@ The Team
             `,
         };
 
-        await Promise.all([
+        // ✅ NON-BLOCKING EMAIL (IMPORTANT)
+        Promise.all([
             transporter.sendMail(adminMail),
             transporter.sendMail(userMail),
-        ]);
+        ]).catch((err) => console.error("Email error:", err));
 
-        console.log("✓ Emails sent to admin and user");
+        console.log("✓ Emails triggered");
 
+        // ✅ SEND RESPONSE IMMEDIATELY
         res.json({
             status: "success",
             message: "Message sent successfully",
@@ -148,119 +166,7 @@ The Team
     }
 });
 
-// GET ALL MESSAGES (Admin Dashboard)
-app.get("/messages", async (req, res) => {
-    let conn;
-    try {
-        conn = await pool.getConnection();
-
-        const messages = await conn.query(`
-            SELECT 
-                m.id,
-                u.first_name,
-                u.last_name,
-                u.email,
-                u.phone,
-                d.name AS department,
-                ms.status_name,
-                m.subject,
-                m.message,
-                m.created_at
-            FROM messages m
-            JOIN users u ON m.user_id = u.id
-            JOIN departments d ON m.department_id = d.id
-            JOIN message_status ms ON m.status_id = ms.id
-            ORDER BY m.created_at DESC
-        `);
-
-        res.json(messages);
-    } catch (error) {
-        console.error("Error fetching messages:", error);
-        res.status(500).json({ error: "Failed to fetch messages" });
-    } finally {
-        if (conn) conn.release();
-    }
-});
-
-// GET SINGLE MESSAGE
-app.get("/messages/:id", async (req, res) => {
-    let conn;
-    try {
-        conn = await pool.getConnection();
-
-        const messages = await conn.query(`
-            SELECT 
-                m.id,
-                u.first_name,
-                u.last_name,
-                u.email,
-                u.phone,
-                d.name AS department,
-                ms.status_name,
-                m.subject,
-                m.message,
-                m.created_at
-            FROM messages m
-            JOIN users u ON m.user_id = u.id
-            JOIN departments d ON m.department_id = d.id
-            JOIN message_status ms ON m.status_id = ms.id
-            WHERE m.id = ?
-        `, [req.params.id]);
-
-        if (messages.length === 0) {
-            return res.status(404).json({ error: "Message not found" });
-        }
-
-        res.json(messages[0]);
-    } catch (error) {
-        console.error("Error fetching message:", error);
-        res.status(500).json({ error: "Failed to fetch message" });
-    } finally {
-        if (conn) conn.release();
-    }
-});
-
-// UPDATE MESSAGE STATUS
-app.put("/messages/:id/status", async (req, res) => {
-    let conn;
-    try {
-        const { statusId } = req.body;
-
-        if (!statusId) {
-            return res.status(400).json({ error: "Status ID required" });
-        }
-
-        conn = await pool.getConnection();
-
-        await conn.query(
-            "UPDATE messages SET status_id = ? WHERE id = ?",
-            [statusId, req.params.id]
-        );
-
-        res.json({ status: "success", message: "Status updated" });
-    } catch (error) {
-        console.error("Error updating status:", error);
-        res.status(500).json({ error: "Failed to update status" });
-    } finally {
-        if (conn) conn.release();
-    }
-});
-
-// GET DEPARTMENTS
-app.get("/departments", async (req, res) => {
-    let conn;
-    try {
-        conn = await pool.getConnection();
-        const departments = await conn.query("SELECT id, name FROM departments");
-        res.json(departments);
-    } catch (error) {
-        console.error("Error fetching departments:", error);
-        res.status(500).json({ error: "Failed to fetch departments" });
-    } finally {
-        if (conn) conn.release();
-    }
-});
-
-app.listen(PORT, () => {
+// ✅ START SERVER
+app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });
