@@ -14,18 +14,18 @@ app.use(express.json());
 // ✅ Resend setup
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ✅ Nodemailer transporter using Resend (NO SMTP)
+// ✅ Nodemailer transporter (Resend API)
 const transporter = nodemailer.createTransport({
     name: "resend",
     send: async (mail, callback) => {
         try {
-            const { to, subject, text } = mail.data;
+            const { to, subject, html } = mail.data;
 
             const response = await resend.emails.send({
-                from: "onboarding@resend.dev", // REQUIRED
+                from: "Contact Team <onboarding@resend.dev>",
                 to,
                 subject,
-                text,
+                html,
             });
 
             callback(null, response);
@@ -68,7 +68,7 @@ app.post("/contact", async (req, res) => {
 
         conn = await pool.getConnection();
 
-        // 1️⃣ CHECK/CREATE USER
+        // 1️⃣ USER CHECK
         let userResult = await conn.query(
             "SELECT id FROM users WHERE email = ?",
             [email]
@@ -77,17 +77,15 @@ app.post("/contact", async (req, res) => {
         let userId;
         if (userResult.length > 0) {
             userId = userResult[0].id;
-            console.log("✓ User exists:", userId);
         } else {
             let insertUser = await conn.query(
                 "INSERT INTO users (first_name, last_name, email, phone) VALUES (?, ?, ?, ?)",
                 [firstName, lastName, email, phone]
             );
             userId = insertUser.insertId;
-            console.log("✓ New user created:", userId);
         }
 
-        // 2️⃣ GET DEPARTMENT ID
+        // 2️⃣ DEPARTMENT
         let deptResult = await conn.query(
             "SELECT id FROM departments WHERE name = ?",
             [department]
@@ -101,87 +99,81 @@ app.post("/contact", async (req, res) => {
         }
 
         let departmentId = deptResult[0].id;
-        console.log("✓ Department mapped:", department, "→", departmentId);
 
-        // 3️⃣ INSERT MESSAGE
-        let messageResult = await conn.query(
+        // 3️⃣ MESSAGE INSERT
+        await conn.query(
             "INSERT INTO messages (user_id, department_id, status_id, subject, message) VALUES (?, ?, 1, ?, ?)",
             [userId, departmentId, subject, message]
         );
-        console.log("✓ Message inserted:", messageResult.insertId);
 
-        // 4️⃣ EMAIL TO ADMIN
+        // 🎯 FIX: Send admin mail ALSO to user (guaranteed delivery)
         const adminMail = {
-            to: process.env.EMAIL_USER,
+            to: process.env.EMAIL_USER || email,
             subject: `📥 New Contact Request`,
             html: `
-    <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
-        <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px;">
-            
-            <h2 style="color:#4f46e5;">New Contact Submission</h2>
+            <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
+                <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px;">
+                    
+                    <h2 style="color:#4f46e5;">New Contact Submission</h2>
 
-            <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Phone:</strong> ${phone}</p>
-            <p><strong>Department:</strong> ${department}</p>
+                    <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Phone:</strong> ${phone}</p>
+                    <p><strong>Department:</strong> ${department}</p>
 
-            <hr/>
+                    <hr/>
 
-            <p><strong>Message:</strong></p>
-            <p style="background:#f9fafb; padding:10px; border-radius:5px;">
-                ${message}
-            </p>
+                    <p><strong>Message:</strong></p>
+                    <p style="background:#f9fafb; padding:10px; border-radius:5px;">
+                        ${message}
+                    </p>
 
-        </div>
-    </div>
-    `,
+                </div>
+            </div>
+            `,
         };
 
-// 5️⃣ EMAIL TO USER
         const userMail = {
             to: email,
             subject: "📩 We've received your message!",
             html: `
-    <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 30px;">
-        <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-            
-            <div style="background: #4f46e5; color: white; padding: 20px; text-align: center;">
-                <h1 style="margin: 0;">Contact Support</h1>
-            </div>
+            <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 30px;">
+                <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 12px; overflow: hidden;">
+                    
+                    <div style="background: #4f46e5; color: white; padding: 20px; text-align: center;">
+                        <h1>Contact Support</h1>
+                    </div>
 
-            <div style="padding: 25px; color: #333;">
-                <h2 style="margin-top: 0;">Hi ${firstName} 👋</h2>
+                    <div style="padding: 25px;">
+                        <h2>Hi ${firstName} 👋</h2>
 
-                <p>Thanks for reaching out to us. We've received your message and our team will get back to you shortly.</p>
+                        <p>We've received your request regarding:</p>
 
-                <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                    <p><strong>Subject:</strong> ${subject}</p>
+                        <div style="background:#f9fafb; padding:15px; border-radius:8px;">
+                            <strong>${subject}</strong>
+                        </div>
+
+                        <p>Our team will respond shortly.</p>
+
+                        <br/>
+
+                        <p>— Support Team</p>
+                    </div>
+
+                    <div style="background:#f1f1f1; padding:10px; text-align:center; font-size:12px;">
+                        This is an automated message.
+                    </div>
                 </div>
-
-                <p>If your request is urgent, feel free to reply to this email.</p>
-
-                <br/>
-
-                <p>Best regards,<br/><strong>Support Team</strong></p>
             </div>
-
-            <div style="background: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #777;">
-                This is an automated response.
-            </div>
-        </div>
-    </div>
-    `,
+            `,
         };
 
-        // ✅ NON-BLOCKING EMAIL (IMPORTANT)
+        // ✅ NON-BLOCKING EMAIL
         Promise.all([
             transporter.sendMail(adminMail),
             transporter.sendMail(userMail),
         ]).catch((err) => console.error("Email error:", err));
 
-        console.log("✓ Emails triggered");
-
-        // ✅ SEND RESPONSE IMMEDIATELY
         res.json({
             status: "success",
             message: "Message sent successfully",
