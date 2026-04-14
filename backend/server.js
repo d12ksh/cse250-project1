@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
             const { to, subject, html } = mail.data;
 
             const response = await resend.emails.send({
-                from: "Contact Team <onboarding@resend.dev>",
+                from: "NEW QUERY (ADMIN REQUEST) <onboarding@resend.dev>",
                 to,
                 subject,
                 html,
