@@ -1,11 +1,5 @@
 const mariadb = require("mariadb");
 
-const pool = mariadb.createPool({
-    host: "localhost",
-    user: "vansh",
-    password: "2608",
-    database: "contact_db",
-    connectionLimit: 5
-});
+const pool = mariadb.createPool(process.env.DATABASE_URL);
 
 module.exports = pool;
