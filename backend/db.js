@@ -6,7 +6,8 @@ const pool = mariadb.createPool({
     password: process.env.MYSQLPASSWORD,
     database: process.env.MYSQLDATABASE,
     port: process.env.MYSQLPORT,
-    connectionLimit: 5
+    connectionLimit: 25,
+    acquireTimeout: 20000
 });
 
 module.exports = pool;
