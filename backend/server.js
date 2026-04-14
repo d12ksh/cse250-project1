@@ -113,32 +113,64 @@ app.post("/contact", async (req, res) => {
         // 4️⃣ EMAIL TO ADMIN
         const adminMail = {
             to: process.env.EMAIL_USER,
-            subject: `New Contact: ${subject}`,
-            text: `
-Name: ${firstName} ${lastName}
-Email: ${email}
-Phone: ${phone}
-Department: ${department}
+            subject: `📥 New Contact Request`,
+            html: `
+    <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
+        <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px;">
+            
+            <h2 style="color:#4f46e5;">New Contact Submission</h2>
 
-Message:
-${message}
-            `,
+            <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${phone}</p>
+            <p><strong>Department:</strong> ${department}</p>
+
+            <hr/>
+
+            <p><strong>Message:</strong></p>
+            <p style="background:#f9fafb; padding:10px; border-radius:5px;">
+                ${message}
+            </p>
+
+        </div>
+    </div>
+    `,
         };
 
-        // 5️⃣ EMAIL TO USER
+// 5️⃣ EMAIL TO USER
         const userMail = {
             to: email,
-            subject: "We received your message",
-            text: `
-Hi ${firstName},
+            subject: "📩 We've received your message!",
+            html: `
+    <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 30px;">
+        <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            
+            <div style="background: #4f46e5; color: white; padding: 20px; text-align: center;">
+                <h1 style="margin: 0;">Contact Support</h1>
+            </div>
 
-Thanks for contacting us regarding "${subject}".
+            <div style="padding: 25px; color: #333;">
+                <h2 style="margin-top: 0;">Hi ${firstName} 👋</h2>
 
-We'll get back to you soon.
+                <p>Thanks for reaching out to us. We've received your message and our team will get back to you shortly.</p>
 
-Best regards,
-The Team
-            `,
+                <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <p><strong>Subject:</strong> ${subject}</p>
+                </div>
+
+                <p>If your request is urgent, feel free to reply to this email.</p>
+
+                <br/>
+
+                <p>Best regards,<br/><strong>Support Team</strong></p>
+            </div>
+
+            <div style="background: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #777;">
+                This is an automated response.
+            </div>
+        </div>
+    </div>
+    `,
         };
 
         // ✅ NON-BLOCKING EMAIL (IMPORTANT)
