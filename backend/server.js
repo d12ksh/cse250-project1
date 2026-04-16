@@ -21,12 +21,9 @@ const transporter = nodemailer.createTransport({
         try {
             let { to, subject, html } = mail.data;
 
-            // 🔥 FIX: convert array → string
             if (Array.isArray(to)) {
                 to = to[0];
             }
-
-            console.log("📩 Sending email to:", to);
 
             const response = await resend.emails.send({
                 from: "Contact Team <onboarding@resend.dev>",
@@ -35,7 +32,7 @@ const transporter = nodemailer.createTransport({
                 html,
             });
 
-            console.log("✅ Email sent to:", to);
+            console.log("📩 Email sent →", to);
 
             callback(null, response);
         } catch (error) {
@@ -77,7 +74,7 @@ app.post("/contact", async (req, res) => {
 
         conn = await pool.getConnection();
 
-        // 1️⃣ USER CHECK
+        // 1️⃣ USER CHECK / CREATE
         let userResult = await conn.query(
             "SELECT id FROM users WHERE email = ?",
             [email]
@@ -109,80 +106,62 @@ app.post("/contact", async (req, res) => {
 
         let departmentId = deptResult[0].id;
 
-        // 3️⃣ MESSAGE INSERT
+        // 3️⃣ INSERT MESSAGE
         await conn.query(
             "INSERT INTO messages (user_id, department_id, status_id, subject, message) VALUES (?, ?, 1, ?, ?)",
             [userId, departmentId, subject, message]
         );
 
-        // 🎯 FIX: Send admin mail ALSO to user (guaranteed delivery)
+        // 📩 ADMIN EMAIL
         const adminMail = {
-            to: process.env.EMAIL_USER || email,
-            subject: `📥 New Contact Request`,
+            from: "Contact Team <onboarding@resend.dev>",
+            to: process.env.EMAIL_USER,
+            subject: "📥 New Contact Request",
             html: `
-            <div style="font-family: Arial; background:#f4f6f8; padding:20px;">
-                <div style="max-width:600px; margin:auto; background:white; padding:20px; border-radius:10px;">
-                    
-                    <h2 style="color:#4f46e5;">New Contact Submission</h2>
-
-                    <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-                    <p><strong>Email:</strong> ${email}</p>
-                    <p><strong>Phone:</strong> ${phone}</p>
-                    <p><strong>Department:</strong> ${department}</p>
-
-                    <hr/>
-
-                    <p><strong>Message:</strong></p>
-                    <p style="background:#f9fafb; padding:10px; border-radius:5px;">
-                        ${message}
-                    </p>
-
-                </div>
-            </div>
+                <h2>New Contact Submission</h2>
+                <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Phone:</strong> ${phone}</p>
+                <p><strong>Department:</strong> ${department}</p>
+                <hr/>
+                <p><strong>Message:</strong></p>
+                <p>${message}</p>
             `,
         };
 
+        // 📩 USER EMAIL
         const userMail = {
+            from: "Contact Team <onboarding@resend.dev>",
             to: email,
             subject: "📩 We've received your message!",
             html: `
-            <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 30px;">
-                <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 12px; overflow: hidden;">
-                    
-                    <div style="background: #4f46e5; color: white; padding: 20px; text-align: center;">
-                        <h1>Contact Support</h1>
-                    </div>
-
-                    <div style="padding: 25px;">
-                        <h2>Hi ${firstName} 👋</h2>
-
-                        <p>We've received your request regarding:</p>
-
-                        <div style="background:#f9fafb; padding:15px; border-radius:8px;">
-                            <strong>${subject}</strong>
-                        </div>
-
-                        <p>Our team will respond shortly.</p>
-
-                        <br/>
-
-                        <p>— Support Team</p>
-                    </div>
-
-                    <div style="background:#f1f1f1; padding:10px; text-align:center; font-size:12px;">
-                        This is an automated message.
-                    </div>
-                </div>
-            </div>
+                <h2>Hi ${firstName},</h2>
+                <p>Thanks for contacting us! Here is a copy of your message:</p>
+                <p><strong>Subject:</strong> ${subject}</p>
+                <p><strong>Message:</strong></p>
+                <p>${message}</p>
+                <br/>
+                <p>We will get back to you shortly.</p>
+                <p>— Support Team</p>
             `,
         };
 
-        // ✅ NON-BLOCKING EMAIL
-        Promise.all([
-            transporter.sendMail(adminMail),
-            transporter.sendMail(userMail),
-        ]).catch((err) => console.error("Email error:", err));
+        // ✅ SEND EMAILS (SEPARATE)
+        try {
+            await transporter.sendMail(adminMail);
+            console.log("✅ Admin email sent");
+        } catch (err) {
+            console.error("❌ Admin email failed:", err);
+        }
 
+        try {
+            await transporter.sendMail(userMail);
+            console.log("✅ User email sent");
+        } catch (err) {
+            console.error("❌ User email failed:", err);
+        }
+
+        // ✅ RESPONSE
         res.json({
             status: "success",
             message: "Message sent successfully",
