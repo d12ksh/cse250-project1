@@ -139,7 +139,7 @@ app.post("/contact", async (req, res) => {
                 <p><b>Subject:</b> ${subject}</p>
                 <p><b>Message:</b><br/>${message}</p>
                 <br/>
-                <p>— XYZ Technologies</p>
+                <p> --- XYZ Technologies</p>
             </div>
             `,
         };
