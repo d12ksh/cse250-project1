@@ -162,7 +162,7 @@ app.post("/contact", async (req, res) => {
             <!-- HEADER -->
             <div style="background:linear-gradient(90deg,#4f46e5,#7c3aed); color:white; padding:25px; text-align:center;">
                 <h1 style="margin:0;">XYZ Technologies</h1>
-                <p style="margin:0; font-size:14px;">We’ve received your message</p>
+                <p style="margin:0; font-size:14px;">We've received your message</p>
             </div>
 
             <!-- BODY -->
@@ -177,7 +177,7 @@ app.post("/contact", async (req, res) => {
                     <p>${message}</p>
                 </div>
 
-                <p style="margin-top:20px;">If this wasn’t you, you can safely ignore this email.</p>
+                <p style="margin-top:20px;">If this wasn't you, you can safely ignore this email.</p>
 
                 <p style="margin-top:30px;">— Team XYZ</p>
             </div>
@@ -223,6 +223,7 @@ app.post("/contact", async (req, res) => {
         if (conn) conn.release();
     }
 });
+
 app.get("/messages", async (req, res) => {
     try {
         const result = await pool.query(`
@@ -238,14 +239,9 @@ app.get("/messages", async (req, res) => {
             FROM messages m
             JOIN users u ON m.user_id = u.id
             JOIN departments d ON m.department_id = d.id
-<<<<<<< HEAD
             JOIN message_status s ON m.status_id = s.id
-            ORDER BY m.created_at DESC
+            
         `);
-=======
-            JOIN message_status s ON m.status_id = s.id  
-        );
->>>>>>> b7b6fa5 (fresh start)
 
         res.json(result);
     } catch (err) {
@@ -253,7 +249,7 @@ app.get("/messages", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch messages" });
     }
 });
-    //comment
+
 // ✅ START SERVER
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server running on port ${PORT}`);
