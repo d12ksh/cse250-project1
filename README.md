@@ -1,4 +1,4 @@
-# 🌐 Contact Us Web System
+# 🌐 Contact Us Page
 
 A simple full-stack web application where users can send messages through a Contact Us form. Messages are stored in a database and email notifications are sent to both the site owner and the user.
 
@@ -45,7 +45,7 @@ archive/    → 📦 Old or unrelated files
 
 ---
 
-## 🚀 Features (Planned not confirmed)
+## 🚀 Features (Planned and confirmed)
 
 ✔ Contact form for users  
 ✔ Store messages in database  
