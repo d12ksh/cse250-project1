@@ -114,39 +114,85 @@ app.post("/contact", async (req, res) => {
 
         // 📩 ADMIN EMAIL
         const adminMail = {
-            from: "Contact Team <onboarding@resend.dev>",
+            from: "XYZ Technologies <onboarding@resend.dev>",
             to: process.env.EMAIL_USER,
             subject: "📥 New Contact Request",
             html: `
-                <h2>New Contact Submission</h2>
+    <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:30px;">
+        <div style="max-width:600px; margin:auto; background:white; border-radius:12px; overflow:hidden;">
+
+            <div style="background:linear-gradient(90deg,#4f46e5,#7c3aed); color:white; padding:20px;">
+                <h2 style="margin:0;">📩 New Contact Submission</h2>
+                <p style="margin:0; font-size:14px;">XYZ Technologies</p>
+            </div>
+
+            <div style="padding:25px;">
                 <p><strong>Name:</strong> ${firstName} ${lastName}</p>
                 <p><strong>Email:</strong> ${email}</p>
                 <p><strong>Phone:</strong> ${phone}</p>
                 <p><strong>Department:</strong> ${department}</p>
-                <hr/>
-                <p><strong>Message:</strong></p>
-                <p>${message}</p>
-            `,
+
+                <hr style="margin:20px 0;"/>
+
+                <p><strong>Subject:</strong> ${subject}</p>
+
+                <div style="background:#f9fafb; padding:15px; border-radius:8px;">
+                    ${message}
+                </div>
+            </div>
+
+            <div style="background:#f1f1f1; padding:10px; text-align:center; font-size:12px;">
+                Internal Notification • XYZ Technologies
+            </div>
+
+        </div>
+    </div>
+    `,
         };
 
-        // 📩 USER EMAIL
+// 📩 USER EMAIL (UPGRADED UI)
         const userMail = {
-            from: "Contact Team <onboarding@resend.dev>",
+            from: "XYZ Technologies <onboarding@resend.dev>",
             to: email,
             subject: "📩 We've received your message!",
             html: `
-                <h2>Hi ${firstName},</h2>
-                <p>Thanks for contacting us! Here is a copy of your message:</p>
-                <p><strong>Subject:</strong> ${subject}</p>
-                <p><strong>Message:</strong></p>
-                <p>${message}</p>
-                <br/>
-                <p>We will get back to you shortly.</p>
-                <p>— Support Team</p>
-            `,
+    <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:30px;">
+        <div style="max-width:600px; margin:auto; background:white; border-radius:12px; overflow:hidden;">
+            
+            <!-- HEADER -->
+            <div style="background:linear-gradient(90deg,#4f46e5,#7c3aed); color:white; padding:25px; text-align:center;">
+                <h1 style="margin:0;">XYZ Technologies</h1>
+                <p style="margin:0; font-size:14px;">We’ve received your message</p>
+            </div>
+
+            <!-- BODY -->
+            <div style="padding:25px;">
+                <h2>Hi ${firstName} 👋</h2>
+
+                <p>Thanks for reaching out to us. Our team has received your message and will get back to you shortly.</p>
+
+                <div style="margin-top:20px; padding:15px; background:#f9fafb; border-radius:8px;">
+                    <p><strong>Subject:</strong> ${subject}</p>
+                    <p><strong>Message:</strong></p>
+                    <p>${message}</p>
+                </div>
+
+                <p style="margin-top:20px;">If this wasn’t you, you can safely ignore this email.</p>
+
+                <p style="margin-top:30px;">— Team XYZ</p>
+            </div>
+
+            <!-- FOOTER -->
+            <div style="background:#f1f1f1; padding:12px; text-align:center; font-size:12px;">
+                © 2026 XYZ Technologies • All rights reserved
+            </div>
+
+        </div>
+    </div>
+    `,
         };
 
-        // ✅ SEND EMAILS (SEPARATE)
+// ✅ SEND EMAILS
         try {
             await transporter.sendMail(adminMail);
             console.log("✅ Admin email sent");
@@ -161,7 +207,7 @@ app.post("/contact", async (req, res) => {
             console.error("❌ User email failed:", err);
         }
 
-        // ✅ RESPONSE
+// ✅ RESPONSE
         res.json({
             status: "success",
             message: "Message sent successfully",
