@@ -224,24 +224,6 @@ app.post("/contact", async (req, res) => {
     }
 });
 
-app.get("/messages", async (req, res) => {
-    try {
-        const result = await pool.query(`
-            SELECT 
-                m.id,
-                u.first_name,
-                u.email,
-                d.name AS department,
-                m.subject,
-                m.message,
-                s.status_name,
-                m.created_at
-            FROM messages m
-            JOIN users u ON m.user_id = u.id
-            JOIN departments d ON m.department_id = d.id
-            JOIN message_status s ON m.status_id = s.id
-            
-        `);
 
         res.json(result);
     } catch (err) {
