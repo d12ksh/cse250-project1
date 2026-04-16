@@ -19,18 +19,27 @@ const transporter = nodemailer.createTransport({
     name: "resend",
     send: async (mail, callback) => {
         try {
-            const { to, subject, html } = mail.data;
+            let { to, subject, html } = mail.data;
+
+            // 🔥 FIX: convert array → string
+            if (Array.isArray(to)) {
+                to = to[0];
+            }
+
+            console.log("📩 Sending email to:", to);
 
             const response = await resend.emails.send({
-                from: "NEW QUERY (ADMIN REQUEST) <onboarding@resend.dev>",
+                from: "Contact Team <onboarding@resend.dev>",
                 to,
                 subject,
                 html,
             });
 
+            console.log("✅ Email sent to:", to);
+
             callback(null, response);
         } catch (error) {
-            console.error("Email error:", error);
+            console.error("❌ Email error:", error);
             callback(error);
         }
     },
