@@ -238,9 +238,14 @@ app.get("/messages", async (req, res) => {
             FROM messages m
             JOIN users u ON m.user_id = u.id
             JOIN departments d ON m.department_id = d.id
+<<<<<<< HEAD
             JOIN message_status s ON m.status_id = s.id
             ORDER BY m.created_at DESC
         `);
+=======
+            JOIN message_status s ON m.status_id = s.id  
+        );
+>>>>>>> b7b6fa5 (fresh start)
 
         res.json(result);
     } catch (err) {
