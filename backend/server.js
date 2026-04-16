@@ -26,14 +26,13 @@ const transporter = nodemailer.createTransport({
             }
 
             const response = await resend.emails.send({
-                from: "Contact Team <onboarding@resend.dev>",
+                from: "XYZ Technologies <onboarding@resend.dev>",
                 to,
                 subject,
                 html,
             });
 
             console.log("📩 Email sent →", to);
-
             callback(null, response);
         } catch (error) {
             console.error("❌ Email error:", error);
@@ -114,100 +113,44 @@ app.post("/contact", async (req, res) => {
 
         // 📩 ADMIN EMAIL
         const adminMail = {
-            from: "XYZ Technologies <onboarding@resend.dev>",
             to: process.env.EMAIL_USER,
             subject: "📥 New Contact Request",
             html: `
-    <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:30px;">
-        <div style="max-width:600px; margin:auto; background:white; border-radius:12px; overflow:hidden;">
-
-            <div style="background:linear-gradient(90deg,#4f46e5,#7c3aed); color:white; padding:20px;">
-                <h2 style="margin:0;">📩 New Contact Submission</h2>
-                <p style="margin:0; font-size:14px;">XYZ Technologies</p>
+            <div style="font-family: Arial; padding:20px;">
+                <h2>New Contact Submission</h2>
+                <p><b>Name:</b> ${firstName} ${lastName}</p>
+                <p><b>Email:</b> ${email}</p>
+                <p><b>Phone:</b> ${phone}</p>
+                <p><b>Department:</b> ${department}</p>
+                <p><b>Subject:</b> ${subject}</p>
+                <p><b>Message:</b><br/>${message}</p>
             </div>
-
-            <div style="padding:25px;">
-                <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Phone:</strong> ${phone}</p>
-                <p><strong>Department:</strong> ${department}</p>
-
-                <hr style="margin:20px 0;"/>
-
-                <p><strong>Subject:</strong> ${subject}</p>
-
-                <div style="background:#f9fafb; padding:15px; border-radius:8px;">
-                    ${message}
-                </div>
-            </div>
-
-            <div style="background:#f1f1f1; padding:10px; text-align:center; font-size:12px;">
-                Internal Notification • XYZ Technologies
-            </div>
-
-        </div>
-    </div>
-    `,
+            `,
         };
 
-// 📩 USER EMAIL (UPGRADED UI)
+        // 📩 USER EMAIL
         const userMail = {
-            from: "XYZ Technologies <onboarding@resend.dev>",
             to: email,
-            subject: "📩 We've received your message!",
+            subject: "We've received your message",
             html: `
-    <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:30px;">
-        <div style="max-width:600px; margin:auto; background:white; border-radius:12px; overflow:hidden;">
-            
-            <!-- HEADER -->
-            <div style="background:linear-gradient(90deg,#4f46e5,#7c3aed); color:white; padding:25px; text-align:center;">
-                <h1 style="margin:0;">XYZ Technologies</h1>
-                <p style="margin:0; font-size:14px;">We've received your message</p>
+            <div style="font-family: Arial; padding:20px;">
+                <h2>Hi ${firstName},</h2>
+                <p>We received your message and will get back to you soon.</p>
+                <p><b>Subject:</b> ${subject}</p>
+                <p><b>Message:</b><br/>${message}</p>
+                <br/>
+                <p>— XYZ Technologies</p>
             </div>
-
-            <!-- BODY -->
-            <div style="padding:25px;">
-                <h2>Hi ${firstName} 👋</h2>
-
-                <p>Thanks for reaching out to us. Our team has received your message and will get back to you shortly.</p>
-
-                <div style="margin-top:20px; padding:15px; background:#f9fafb; border-radius:8px;">
-                    <p><strong>Subject:</strong> ${subject}</p>
-                    <p><strong>Message:</strong></p>
-                    <p>${message}</p>
-                </div>
-
-                <p style="margin-top:20px;">If this wasn't you, you can safely ignore this email.</p>
-
-                <p style="margin-top:30px;">— Team XYZ</p>
-            </div>
-
-            <!-- FOOTER -->
-            <div style="background:#f1f1f1; padding:12px; text-align:center; font-size:12px;">
-                © 2026 XYZ Technologies • All rights reserved
-            </div>
-
-        </div>
-    </div>
-    `,
+            `,
         };
 
-// ✅ SEND EMAILS
-        try {
-            await transporter.sendMail(adminMail);
-            console.log("✅ Admin email sent");
-        } catch (err) {
-            console.error("❌ Admin email failed:", err);
-        }
+        // ✅ SEND EMAILS
+        await transporter.sendMail(adminMail);
+        await transporter.sendMail(userMail);
 
-        try {
-            await transporter.sendMail(userMail);
-            console.log("✅ User email sent");
-        } catch (err) {
-            console.error("❌ User email failed:", err);
-        }
+        console.log("✅ Emails sent");
 
-// ✅ RESPONSE
+        // ✅ RESPONSE
         res.json({
             status: "success",
             message: "Message sent successfully",
@@ -221,14 +164,6 @@ app.post("/contact", async (req, res) => {
         });
     } finally {
         if (conn) conn.release();
-    }
-});
-
-
-        res.json(result);
-    } catch (err) {
-        console.error("❌ Fetch error:", err);
-        res.status(500).json({ error: "Failed to fetch messages" });
     }
 });
 
